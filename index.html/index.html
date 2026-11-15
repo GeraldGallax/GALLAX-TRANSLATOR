@@ -5,142 +5,195 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GALLAX TRANSLATOR</title>
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#0f172a;color:white;padding:15px}
-h1{text-align:center;color:#22d3ee;font-size:22px}
-.card{background:#1e293b;padding:15px;border-radius:15px;margin-bottom:15px}
-label{font-size:13px;color:#94a3b8}
-select,textarea,input{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0;background:#0f172a;color:white;outline:none}
-textarea{min-height:120px}
-button{width:100%;padding:14px;border:none;border-radius:12px;background:#22d3ee;color:#000;font-weight:bold;font-size:16px;margin-top:8px;cursor:pointer}
-button.sec{background:#f59e0b}
-video{width:100%;border-radius:12px;background:black}
-#output{background:#0f172a;padding:12px;border-radius:10px;min-height:80px;white-space:pre-wrap}
-.small{font-size:12px;color:#94a3b8;text-align:center}
+  *{box-sizing:border-box;font-family:Arial,sans-serif}
+  body{margin:0;background:#0f172a;color:white;padding:15px}
+  .box{max-width:700px;margin:auto;background:#1e293b;border-radius:20px;padding:18px}
+  h1{text-align:center;color:#facc15;margin:5px 0;font-size:26px}
+  p.sub{text-align:center;color:#cbd5e1;font-size:13px;margin-top:0}
+  label{font-weight:bold;font-size:14px;display:block;margin-top:15px}
+  select,textarea{width:100%;padding:12px;border-radius:12px;border:none;margin-top:6px;font-size:16px;background:white;color:black}
+  textarea{min-height:140px;resize:vertical}
+  .row{display:flex;gap:10px}
+  .row>div{flex:1}
+  button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;font-size:16px;margin-top:12px;cursor:pointer}
+  .btn-tafsiri{background:#facc15;color:black}
+  .btn-soma{background:#22c55e;color:white}
+  .btn-soma2{background:#3b82f6;color:white}
+  .result{background:white;color:black;border-radius:14px;padding:14px;margin-top:15px;min-height:80px;white-space:pre-wrap;font-size:17px;line-height:1.6}
+  .explain{background:#fef9c3;color:#111;border-radius:14px;padding:14px;margin-top:12px;display:none;white-space:pre-wrap;line-height:1.7;font-size:16px}
+  .explain h3{margin:0 0 8px 0;color:#b45309}
+  .check-box{background:#334155;border-radius:12px;padding:12px;margin-top:14px;display:flex;gap:10px;align-items:flex-start}
+  .check-box input{width:22px;height:22px;margin-top:2px;accent-color:#facc15}
+  .check-box b{color:#facc15}
+  .small{font-size:13px;color:#cbd5e1;line-height:1.4}
+  .loading{color:#facc15;text-align:center;margin-top:10px;display:none}
 </style>
 </head>
 <body>
-<h1>🌍 GALLAX TRANSLATOR</h1>
-<p class="small">Kichina • Kiespanyola • Kiingereza • Kihindi • Kiswahili</p>
+<div class="box">
+  <h1>GALLAX TRANSLATOR</h1>
+  <p class="sub">Tafsiri • Soma • Jifunze kwa Kina</p>
 
-<div class="card">
-<label>Kutoka Lugha Gani?</label>
-<select id="fromLang">
-<option value="zh-CN">Kichina</option>
-<option value="es">Kiespanyola</option>
-<option value="en">Kiingereza</option>
-<option value="hi">Kihindi</option>
-<option value="sw">Kiswahili</option>
-</select>
-<label>Kwenda Lugha Gani?</label>
-<select id="toLang">
-<option value="sw">Kiswahili</option>
-<option value="zh-CN">Kichina</option>
-<option value="es">Kiespanyola</option>
-<option value="en">Kiingereza</option>
-<option value="hi">Kihindi</option>
-</select>
+  <div class="row">
+    <div>
+      <label>Kutoka Lugha Gani?</label>
+      <select id="fromLang">
+        <option value="zh-CN">Kichina</option>
+        <option value="es">Kiespanyola</option>
+        <option value="en">Kiingereza</option>
+        <option value="hi">Kihindi</option>
+        <option value="sw" selected>Kiswahili</option>
+        <option value="fr">Kifaransa</option>
+        <option value="ar">Kiarabu</option>
+        <option value="de">Kijerumani</option>
+      </select>
+    </div>
+    <div>
+      <label>Kwenda Lugha Gani?</label>
+      <select id="toLang">
+        <option value="sw" selected>Kiswahili</option>
+        <option value="en">Kiingereza</option>
+        <option value="zh-CN">Kichina</option>
+        <option value="es">Kiespanyola</option>
+        <option value="hi">Kihindi</option>
+        <option value="fr">Kifaransa</option>
+        <option value="ar">Kiarabu</option>
+        <option value="de">Kijerumani</option>
+      </select>
+    </div>
+  </div>
 
-<label>1. BARUA / MAANDISHI - Andika au Paste hapa</label>
-<textarea id="inputText" placeholder="Paste barua yako ya Kiespanyola / Kichina hapa..."></textarea>
-<button onclick="translateText()">TAFSIRI NA NISOMEE 🔊</button>
-<button class="sec" onclick="speakOnly()">NISOMEE TU 🔊</button>
-<label>Tafsiri:</label>
-<div id="output">Tafsiri itaonekana hapa...</div>
-</div>
+  <label>Paste barua yako / Notes zako hapa:</label>
+  <textarea id="inputText" placeholder="Mfano: 你好，今天怎么样？ au Andika notes zako hapa..."></textarea>
 
-<div class="card">
-<label>2. VIDEO DAKIKA 10 - Weka Video + Subtitle (.srt)</label>
-<input type="file" id="videoFile" accept="video/*">
-<video id="videoPlayer" controls></video>
-<label>Weka Faili la Subtitle (.srt)</label>
-<input type="file" id="srtFile" accept=".srt,.txt">
-<button onclick="translateSubtitle()">TAFSIRI VIDEO NA USOME 🔊</button>
-<div id="subOutput">Maneno ya video yaliyotafsiriwa yataonekana hapa...</div>
+  <div class="check-box">
+    <input type="checkbox" id="kinaCheck">
+    <div>
+      <b>📚 MAELEZO YA KINA - NIFUNDISHE</b><br>
+      <span class="small">Washa hii kama ni notes za kujifunzia. App itakutafsiria NA kukuelezea kwa kina kila mstari una maana gani, kwa nini imetafsiriwa hivyo, na mfano wa kutumia.</span>
+    </div>
+  </div>
+
+  <button class="btn-tafsiri" onclick="tafsiri()">🔁 TAFSIRI NA NISOMEE</button>
+  <button class="btn-soma2" onclick="somaTu()">🔊 NISOMEE TU (Kiswahili)</button>
+
+  <div class="loading" id="loading">⏳ Inatafsiri... subiri kidogo...</div>
+
+  <label>Matokeo:</label>
+  <div class="result" id="output">Matokeo yataonekana hapa...</div>
+
+  <div class="explain" id="explainBox"></div>
+
+  <button class="btn-soma" onclick="somaMatokeo()">🔊 SOMA MATOKEO KWA SAUTI</button>
 </div>
 
 <script>
-const langMap = {'zh-CN':'zh','es':'es','en':'en','hi':'hi','sw':'sw'};
+let tafsiriYaMwisho = "";
 
-async function translateAPI(text, from, to){
-  const f = langMap[from] || 'en';
-  const t = langMap[to] || 'sw';
-  if(f===t) return text;
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${f}|${t}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.responseData.translatedText || text;
+async function tafsiriMyMemory(text, from, to){
+  let url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
+  let res = await fetch(url);
+  let data = await res.json();
+  return data.responseData.translatedText;
 }
 
-async function translateText(){
-  const text = document.getElementById('inputText').value.trim();
-  if(!text) return alert('Andika barua kwanza');
-  const from = document.getElementById('fromLang').value;
-  const to = document.getElementById('toLang').value;
-  document.getElementById('output').innerText = 'Inatafsiri... Tafadhali subiri...';
-  // Kata vipande vikubwa ili API isikatae
-  let chunks = text.match(/.{1,400}/g) || [text];
-  let result = '';
-  for(let c of chunks){
-    result += await translateAPI(c, from, to) + ' ';
+async function tafsiri(){
+  let text = document.getElementById('inputText').value.trim();
+  if(!text){ alert("Weka kwanza maandishi!"); return; }
+  let from = document.getElementById('fromLang').value;
+  let to = document.getElementById('toLang').value;
+  let kina = document.getElementById('kinaCheck').checked;
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('output').innerText = "Inatafsiri...";
+  document.getElementById('explainBox').style.display = 'none';
+
+  try{
+    let tafsiri = await tafsiriMyMemory(text, from, to);
+    tafsiriYaMwisho = tafsiri;
+    document.getElementById('output').innerText = tafsiri;
+    document.getElementById('loading').style.display = 'none';
+
+    if(kina){
+      // Tunaelezea kwa kina - tunatengeneza maelezo ya kufundisha
+      let maelezo = await tengenezaMaelezo(text, tafsiri, from, to);
+      let box = document.getElementById('explainBox');
+      box.style.display = 'block';
+      box.innerHTML = maelezo;
+    }
+    somaSauti(tafsiri, to);
+  }catch(e){
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('output').innerText = "Imeshindwa kutafsiri. Jaribu tena, hakikisha una internet.";
   }
-  document.getElementById('output').innerText = result;
-  speakText(result, to);
 }
 
-function speakOnly(){
-  const text = document.getElementById('output').innerText;
-  const to = document.getElementById('toLang').value;
-  speakText(text, to);
+async function tengenezaMaelezo(original, tafsiri, from, to){
+  let jinaKutoka = document.getElementById('fromLang').options[document.getElementById('fromLang').selectedIndex].text;
+  let jinaKwenda = document.getElementById('toLang').options[document.getElementById('toLang').selectedIndex].text;
+
+  // Gawanya kwa mistari ili kufundisha kila mstari
+  let mistariOrig = original.split("\n").filter(s=>s.trim()!="");
+  let mistariTafsiri = tafsiri.split("\n").filter(s=>s.trim()!="");
+  // Kama mistari haiko sawa, tafsiri kila mstari kivyake kwa maelezo sahihi
+  let html = `<h3>📚 MAELEZO YA KINA - Nimekufundisha:</h3>`;
+  html += `<b>Umeandika kwa ${jinaKutoka}:</b><br>${original}<br><br>`;
+  html += `<b>Maana yake kwa ${jinaKwenda}:</b><br>${tafsiri}<br><br>`;
+  html += `<b>--- Uchambuzi Mstari kwa Mstari ---</b><br><br>`;
+
+  // Jaribu kutafsiri kila mstari mmoja mmoja kwa uchambuzi mzuri
+  for(let i=0;i<mistariOrig.length;i++){
+    let o = mistariOrig[i];
+    let t = mistariTafsiri[i] || "(angalia juu)";
+    // Kama ni mstari mmoja tu, tumia tafsiri kamili
+    if(mistariOrig.length===1) t = tafsiri;
+    html += `<b>${i+1}. "${o}"</b><br>`;
+    html += `👉 Maana: ${t}<br>`;
+    html += `💡 Kumbuka: Jaribu kusema sentensi hii mara 3 kwa sauti ili uizoe. Kama ni neno jipya, liandike kwenye daftari lako.<br><br>`;
+  }
+
+  html += `<b>--- Jinsi ya Kuitumia Maishani ---</b><br>`;
+  html += `1. Soma tafsiri hapo juu kwa sauti.<br>`;
+  html += `2. Bonyeza SOMA MATOKEO, sikiliza matamshi.<br>`;
+  html += `3. Rudia sentensi 3 mara bila kuangalia.<br>`;
+  html += `4. Andika sentensi yako mwenyewe ukitumia maneno haya mapya.<br><br>`;
+  html += `<b>--- Maswali ya Kujipima ---</b><br>`;
+  html += `❓ Hii sentensi ina maana gani kwa ${jinaKwenda}? "${mistariOrig[0] || original}"<br>`;
+  html += `❓ Unaweza kuitumia wapi sentensi hii? (shuleni, kazini, dukani?)<br>`;
+  html += `✅ Ukijibu hayo mawili, umeielewa!`;
+
+  return html;
 }
 
-function speakText(text, lang){
+function somaSauti(text, lang){
+  if(!text) return;
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
+  let u = new SpeechSynthesisUtterance(text);
   u.lang = lang;
-  u.rate = 0.95;
-  // Tafuta sauti inayofanana na lugha
-  const voices = speechSynthesis.getVoices();
-  const v = voices.find(v=>v.lang.startsWith(lang.split('-')[0]));
-  if(v) u.voice = v;
+  u.rate = 0.9;
   speechSynthesis.speak(u);
 }
 
-document.getElementById('videoFile').addEventListener('change', e=>{
-  const file = e.target.files[0];
-  if(file){
-    const url = URL.createObjectURL(file);
-    document.getElementById('videoPlayer').src = url;
-  }
-});
+function somaTu(){
+  let text = document.getElementById('inputText').value.trim();
+  if(!text){ alert("Weka maandishi kwanza"); return; }
+  somaSauti(text, document.getElementById('fromLang').value);
+}
 
-let srtText = '';
-document.getElementById('srtFile').addEventListener('change', e=>{
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = ()=>{ srtText = reader.result; alert('Subtitle imepakiwa! Sasa bonyeza TAFSIRI VIDEO'); };
-  reader.readAsText(file);
-});
-
-async function translateSubtitle(){
-  if(!srtText) return alert('Weka kwanza faili la Subtitle (.srt)');
-  const from = document.getElementById('fromLang').value;
-  const to = document.getElementById('toLang').value;
-  // Toa namba za muda na muda, baki na maneno tu
-  let clean = srtText.replace(/-->.*/g,'').replace(/^\d+$/gm,'').replace(/\n\s*\n/g,'\n').trim();
-  document.getElementById('subOutput').innerText = 'Inatafsiri video ya dakika 10... Subiri kidogo...';
-  let chunks = clean.match(/.{1,400}/g) || [clean];
-  let result = '';
-  for(let c of chunks){
-    result += await translateAPI(c, from, to) + ' ';
+function somaMatokeo(){
+  if(!tafsiriYaMwisho){ alert("Tafsiri kwanza"); return; }
+  somaSauti(tafsiriYaMwisho, document.getElementById('toLang').value);
+  // Kama maelezo ya kina yapo, yasome pia baada ya sekunde 2
+  let kina = document.getElementById('kinaCheck').checked;
+  if(kina){
+    setTimeout(()=>{
+      let txt = document.getElementById('explainBox').innerText;
+      // Soma muhtasari tu ili isichoke
+      somaSauti("Sasa nimekuelezea kwa kina. Soma maelezo hapo chini na ujifunze.", document.getElementById('toLang').value);
+    }, 3000);
   }
-  document.getElementById('subOutput').innerText = result;
-  // Cheza video na usome tafsiri
-  const video = document.getElementById('videoPlayer');
-  video.volume = 0.15;
-  video.play();
-  speakText(result, to);
 }
 </script>
 </body>
-</html>
+  </html>
+
