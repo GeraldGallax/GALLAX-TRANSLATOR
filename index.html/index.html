@@ -45,7 +45,7 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;f
 <body>
 <div class="box">
 <h1>GALLAX TRANSLATOR</h1>
-<p class="sub">Tafsiri • Soma • Jifunze kama Mwalimu • 50 TSH / Page</p>
+<p class="sub">Tafsiri • Soma kwa Kiswahili • 50 TSH / Page</p>
 <div class="credit">Salio lako: <b id="salioText">Page 1 BURE</b> | Bei: <b>50 TSH / Page 1</b></div>
 
 <div class="row">
@@ -103,8 +103,8 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;f
 <option value="1">Kawaida</option>
 </select>
 
-<button class="btn-tafsiri" onclick="tafsiri()">TAFSIRI NA NISOMEE</button>
-<button class="btn-soma" onclick="somaTu()">NISOMEE TU</button>
+<button class="btn-tafsiri" onclick="tafsiri()">TAFSIRI NA NISOMEE KWA KISWAHILI</button>
+<button class="btn-soma" onclick="somaTu()">NISOMEE TU KWA KISWAHILI</button>
 
 <div class="check-box">
 <input type="checkbox" id="kinaCheck" checked>
@@ -117,7 +117,7 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;f
 <div class="explain" id="explainBox"></div>
 
 <button class="btn-mwalimu" onclick="somaKamaMwalimu()">👩🏾‍🏫 NIFUNDISHE KAMA MWALIMU</button>
-<button class="btn-soma" onclick="somaMatokeo()">🔊 SOMA MATOKEO KWA SAUTI</button>
+<button class="btn-soma" onclick="somaMatokeo()">🔊 SOMA MATOKEO KWA SAUTI - KISWAHILI</button>
 <button class="btn-discuss" onclick="anzaDiscussion()">💬 DISCUSSION - NIULIZE MASWALI</button>
 <div class="explain" id="discussBox" style="background:#ffedd5;display:none"></div>
 
@@ -142,6 +142,7 @@ button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;f
 <script>
 let tafsiriYaMwisho = "";
 let inasomaMwalimu = false;
+let audioSasa = null;
 let pagesZilizotumika = 0;
 let pagesZilizoLipwa = 0;
 try{ pagesZilizotumika = parseInt(localStorage.getItem('gallax_used') || '0'); pagesZilizoLipwa = parseInt(localStorage.getItem('gallax_paid') || '0'); }catch(e){}
@@ -159,20 +160,11 @@ function thibitishaMalipo(){
   pagesZilizoLipwa += count;
   try{ localStorage.setItem('gallax_paid', pagesZilizoLipwa); }catch(e){}
   document.getElementById('muamalaInput').value = "";
-  alert("✅ Asante! Umeongeza Page " + count + ". Unaweza kutafsiri sasa.");
+  alert("✅ Asante! Umeongeza Page " + count + ".");
   updateSalio();
 }
+const KAMUSI = {"hello":"Habari","hello, i am a student":"Habari, mimi ni mwanafunzi","i am a student":"Mimi ni mwanafunzi","你好":"Habari","你好，我是学生":"Habari, mimi ni mwanafunzi"};
 
-// KAMUSI YA NDANI
-const KAMUSI = {
-  "hello": "Habari",
-  "hello, i am a student": "Habari, mimi ni mwanafunzi",
-  "i am a student": "Mimi ni mwanafunzi",
-  "你好": "Habari",
-  "你好，我是学生": "Habari, mimi ni mwanafunzi"
-};
-
-// *** FIX 1: TAFSIRI KICHINA -> KISWAHILI INAPITA KIINGEREZA ***
 async function tafsiriAPI(text, from, to){
   let key = text.trim().toLowerCase();
   if(from==="en" && to==="sw" && KAMUSI[key]) return KAMUSI[key];
@@ -182,7 +174,6 @@ async function tafsiriAPI(text, from, to){
       let r1 = await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(text)+"&langpair=zh-CN|en");
       let d1 = await r1.json();
       let enText = d1.responseData.translatedText;
-      if(!enText) throw new Error("fail1");
       let r2 = await fetch("https://api.mymemory.translated.net/get?q="+encodeURIComponent(enText)+"&langpair=en|sw");
       let d2 = await r2.json();
       return d2.responseData.translatedText;
@@ -221,9 +212,7 @@ async function somaPicha(e){
     let result = await Tesseract.recognize(file, lang);
     document.getElementById('inputText').value = result.data.text;
     document.getElementById('ocrStatus').innerText = "✅ Imesoma! Sasa bonyeza TAFSIRI";
-  }catch(err){
-    document.getElementById('ocrStatus').innerText = "Imeshindwa. Jaribu picha clear.";
-  }
+  }catch(err){ document.getElementById('ocrStatus').innerText = "Imeshindwa. Jaribu picha clear."; }
 }
 
 async function tafsiri(){
@@ -231,17 +220,13 @@ async function tafsiri(){
   if(!text){ alert("Weka kwanza notice!"); return; }
   let from = document.getElementById('fromLang').value;
   let to = document.getElementById('toLang').value;
-  if(from === to){ alert("Chagua lugha tofauti! Kutoka na Kwenda ziko sawa."); return; }
+  if(from === to){ alert("Chagua lugha tofauti!"); return; }
   document.getElementById('loading').style.display = 'block';
   document.getElementById('output').innerText = "Inatafsiri...";
   document.getElementById('explainBox').style.display = 'none';
   let t = await tafsiriAPI(text, from, to);
   document.getElementById('loading').style.display = 'none';
-  if(!t){
-    document.getElementById('output').innerText = "Imeshindwa. Angalia internet na ujaribu tena.";
-    alert("Imeshindwa. Angalia internet yako.");
-    return;
-  }
+  if(!t){ document.getElementById('output').innerText = "Imeshindwa. Angalia internet na ujaribu tena."; alert("Imeshindwa. Angalia internet."); return; }
   tafsiriYaMwisho = t;
   document.getElementById('output').innerText = t;
   pagesZilizotumika++;
@@ -250,7 +235,7 @@ async function tafsiri(){
   if(document.getElementById('kinaCheck').checked){
     let box = document.getElementById('explainBox');
     box.style.display = 'block';
-    box.innerHTML = "<h3>📚 MAELEZO YA KINA</h3><b>Umeandika:</b><br>" + text + "<br><br><b>Maana yake:</b><br>" + t + "<br><br><b>Uchambuzi:</b><br>Sentensi hii ina maana kwamba " + t + ". Jaribu kuisoma mara 3.<br><br><b>Maswali:</b><br>❓ Hii ina maana gani?<br>❓ Ungeitumia wapi maishani?";
+    box.innerHTML = "<h3>📚 MAELEZO YA KINA</h3><b>Umeandika:</b><br>" + text + "<br><br><b>Maana yake (Kiswahili):</b><br>" + t + "<br><br>Jaribu kuisoma mara 3.";
   }
   somaSauti(t, to);
 }
@@ -262,45 +247,70 @@ function getPitch(){
   return 1.15;
 }
 
-// *** FIX 2: SAUTI - KAMWE USITUMIE KICHINA KUSOMA KISWAHILI ***
-function chaguaSauti(lang){
-  let voices = speechSynthesis.getVoices();
-  if(!voices || voices.length===0) return null;
-  if(lang==="sw"){
-    // Kiswahili: tafuta sw, kama hakuna tumia Kiingereza. KATAZA Kichina kabisa.
-    let v = voices.find(x=>x.lang==="sw"||x.lang==="sw-KE"||x.lang==="sw-TZ");
-    if(v) return v;
-    v = voices.find(x=>x.lang==="en-US") || voices.find(x=>x.lang && x.lang.toLowerCase().startsWith("en"));
-    if(v) return v;
-    // Kama hakuna Kiingereza pia, chukua yoyote ambayo SI Kichina
-    v = voices.find(x=>x.lang && !x.lang.toLowerCase().startsWith("zh"));
-    return v || null;
-  }
-  if(lang==="zh-CN" || lang==="zh"){
-    return voices.find(x=>x.lang && x.lang.toLowerCase().startsWith("zh")) || null;
-  }
-  return voices.find(x=>x.lang===lang) || voices.find(x=>x.lang && x.lang.toLowerCase().startsWith(lang.split('-')[0].toLowerCase())) || null;
-}
-
-function somaSauti(text, lang){
-  if(!text) return;
-  if(!('speechSynthesis' in window)){ alert("Tumia Chrome ili kusikia sauti."); return; }
-  speechSynthesis.cancel();
+// *** SAUTI MPYA: Google TTS ya Kiswahili - sio sauti ya simu ***
+function somaSautiGoogle(text, langCode){
+  if(audioSasa){ try{ audioSasa.pause(); }catch(e){} }
+  try{ speechSynthesis.cancel(); }catch(e){}
   inasomaMwalimu = false;
+  let vipande = [];
+  let t = text;
+  while(t.length > 0){
+    if(t.length <= 180){ vipande.push(t); break; }
+    let cut = t.lastIndexOf(" ", 180);
+    if(cut <= 0) cut = 180;
+    vipande.push(t.substring(0, cut));
+    t = t.substring(cut).trim();
+  }
+  chezaVipande(vipande, 0, langCode);
+}
+function chezaVipande(vipande, i, langCode){
+  if(i >= vipande.length) return;
+  let url = "https://translate.google.com/translate_tts?ie=UTF-8&q=" + encodeURIComponent(vipande[i]) + "&tl=" + langCode + "&client=tw-ob";
+  audioSasa = new Audio(url);
+  audioSasa.playbackRate = parseFloat(document.getElementById('speedSelect').value) || 0.8;
+  let type = document.getElementById('voiceType').value;
+  if(type==="mwanaume") audioSasa.playbackRate = audioSasa.playbackRate * 0.9;
+  if(type==="mtoto") audioSasa.playbackRate = audioSasa.playbackRate * 1.2;
+  audioSasa.onended = function(){ chezaVipande(vipande, i+1, langCode); };
+  audioSasa.onerror = function(){ somaSautiSimu(vipande[i], langCode); };
+  audioSasa.play().catch(function(){ somaSautiSimu(vipande[i], langCode); });
+}
+function somaSautiSimu(text, lang){
+  if(!('speechSynthesis' in window)) return;
   let u = new SpeechSynthesisUtterance(text);
-  // Kwa Kiswahili, weka lang en-US ili simu isichague Kichina. Maandishi ni Kiswahili, sauti ni Kiingereza inayosoma herufi za Kilatini vizuri.
   u.lang = (lang==="sw") ? "en-US" : lang;
   u.rate = parseFloat(document.getElementById('speedSelect').value) || 0.8;
   u.pitch = getPitch();
-  u.volume = 1;
-  let v = chaguaSauti(lang);
+  let voices = speechSynthesis.getVoices();
+  let v = null;
+  if(lang==="sw"){
+    v = voices.find(x=>x.lang==="en-US") || voices.find(x=>x.lang && x.lang.toLowerCase().startsWith("en")) || voices.find(x=>x.lang && !x.lang.toLowerCase().startsWith("zh"));
+  } else {
+    v = voices.find(x=>x.lang===lang) || voices.find(x=>x.lang && x.lang.toLowerCase().startsWith(lang.split('-')[0].toLowerCase()));
+  }
   if(v) u.voice = v;
   speechSynthesis.speak(u);
 }
-function somaTu(){
+function somaSauti(text, lang){
+  somaSautiGoogle(text, lang);
+}
+// *** NISOMEE TU - SASA INATAFSIRI KWANZA, HALAFU INASOMA KWA KISWAHILI ***
+async function somaTu(){
   let t = document.getElementById('inputText').value.trim();
   if(!t) return alert("Weka maandishi kwanza");
-  somaSauti(t, document.getElementById('fromLang').value);
+  let from = document.getElementById('fromLang').value;
+  let to = document.getElementById('toLang').value;
+  if(from==="sw"){
+    somaSauti(t, "sw");
+    return;
+  }
+  // Kama umeweka Kichina na unataka Kiswahili, tafsiri kwanza halafu soma Kiswahili - sio Kichina
+  document.getElementById('output').innerText = "Inatafsiri ili nikisomee kwa Kiswahili...";
+  let trans = await tafsiriAPI(t, from, to);
+  if(!trans){ alert("Imeshindwa kutafsiri. Angalia internet."); return; }
+  tafsiriYaMwisho = trans;
+  document.getElementById('output').innerText = trans;
+  somaSauti(trans, to);
 }
 function somaMatokeo(){
   if(!tafsiriYaMwisho) return alert("Tafsiri kwanza - Bonyeza TAFSIRI NA NISOMEE");
@@ -308,30 +318,26 @@ function somaMatokeo(){
 }
 function somaKamaMwalimu(){
   if(!tafsiriYaMwisho) return alert("Tafsiri kwanza!");
-  if(inasomaMwalimu){ speechSynthesis.cancel(); inasomaMwalimu=false; return; }
-  let original = document.getElementById('inputText').value.trim();
+  if(inasomaMwalimu){ if(audioSasa) audioSasa.pause(); try{speechSynthesis.cancel();}catch(e){} inasomaMwalimu=false; return; }
   let t = tafsiriYaMwisho;
   let to = document.getElementById('toLang').value;
   let list = [
     "Habari mwanafunzi wangu, karibu kwenye darasa.",
-    "Sikiliza vizuri. Maandishi ya asili ni haya. " + original,
-    "Sasa sikiliza tafsiri yake. " + t,
+    "Sasa sikiliza tafsiri yake kwa Kiswahili. " + t,
     "Umeelewa? Jaribu kurudia mara tatu.",
     "Vizuri sana. Umeielewa."
   ];
   inasomaMwalimu = true;
-  somaZamu(list, 0, to);
+  somaMwalimuZamu(list, 0, to);
 }
-function somaZamu(list, i, lang){
+function somaMwalimuZamu(list, i, lang){
   if(i>=list.length || !inasomaMwalimu){ inasomaMwalimu=false; return; }
-  let u = new SpeechSynthesisUtterance(list[i]);
-  // Mwalimu anaongea Kiswahili, kwa hiyo tumia en-US ili asisome Kichina
-  u.lang = (lang==="sw") ? "en-US" : lang;
-  u.rate = 0.75; u.pitch = getPitch();
-  let v = chaguaSauti(lang);
-  if(v) u.voice = v;
-  u.onend = function(){ setTimeout(function(){ somaZamu(list, i+1, lang); }, 1000); };
-  speechSynthesis.speak(u);
+  let url = "https://translate.google.com/translate_tts?ie=UTF-8&q=" + encodeURIComponent(list[i]) + "&tl=" + lang + "&client=tw-ob";
+  audioSasa = new Audio(url);
+  audioSasa.playbackRate = 0.8;
+  audioSasa.onended = function(){ setTimeout(function(){ somaMwalimuZamu(list, i+1, lang); }, 1000); };
+  audioSasa.onerror = function(){ somaSautiSimu(list[i], lang); setTimeout(function(){ somaMwalimuZamu(list, i+1, lang); }, 1000); };
+  audioSasa.play().catch(function(){ somaSautiSimu(list[i], lang); });
 }
 function anzaDiscussion(){
   if(!tafsiriYaMwisho) return alert("Tafsiri kwanza!");
@@ -340,12 +346,7 @@ function anzaDiscussion(){
   box.innerHTML = "<h3>💬 DISCUSSION</h3><b>Mwalimu:</b> Umeelewa hii tafsiri? \"" + tafsiriYaMwisho + "\"<br><br>1. Hii ina maana gani kwa maneno yako mwenyewe?<br>2. Ungeitumia wapi?";
   somaSauti("Umeelewa hii tafsiri? Jaribu kuniambia kwa maneno yako mwenyewe ina maana gani.", document.getElementById('toLang').value);
 }
-// Pakia sauti za simu kabla ili zisichelewe
-if('speechSynthesis' in window){
-  speechSynthesis.getVoices();
-  speechSynthesis.onvoiceschanged = function(){ speechSynthesis.getVoices(); };
-}
 updateSalio();
 </script>
 </body>
-  </html>
+  </html>  
