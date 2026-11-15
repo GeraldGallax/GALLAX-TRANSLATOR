@@ -28,6 +28,7 @@
   .btn-mwalimu{background:#a855f7;color:white}
   .btn-discuss{background:#f97316;color:white}
   .btn-lipa{background:#00a859;color:white;font-size:18px}
+  .btn-test{background:#3b82f6;color:white}
   .result{background:white;color:black;border-radius:14px;padding:14px;margin-top:8px;min-height:100px;white-space:pre-wrap;font-size:17px;line-height:1.6}
   .explain{background:#fef9c3;color:#111;border-radius:14px;padding:14px;margin-top:12px;display:none;white-space:pre-wrap;line-height:1.7;font-size:16px}
   .check-box{background:#334155;border-radius:12px;padding:12px;margin-top:12px;display:flex;gap:10px;align-items:flex-start}
@@ -39,9 +40,8 @@
   .pay-box h2{margin:0 0 8px 0;text-align:center;font-size:20px}
   .pay-num{background:white;border-radius:12px;padding:12px;margin:8px 0;font-size:17px;line-height:1.6}
   .pay-num b{font-size:20px}
-  .credit{ background:#334155;border-radius:12px;padding:12px;margin-top:12px;text-align:center;font-size:15px}
+  .credit{background:#334155;border-radius:12px;padding:12px;margin-top:12px;text-align:center;font-size:15px}
   .credit b{color:#facc15;font-size:18px}
-  .locked{opacity:0.45;pointer-events:none;filter:grayscale(0.3)}
   .unlock-msg{background:#dcfce7;color:#166534;border-radius:12px;padding:12px;margin-top:12px;display:none;font-weight:bold;text-align:center}
 </style>
 </head>
@@ -50,8 +50,9 @@
   <h1>GALLAX TRANSLATOR</h1>
   <p class="sub">Tafsiri • Soma • Jifunze kama Mwalimu • 50 TSH / Page</p>
 
-  <div class="credit">Salio lako: <b id="salioText">Page 1 BURE</b> &nbsp;|&nbsp; Bei: <b>50 TSH / Page 1</b></div>
-  <div class="unlock-msg" id="unlockMsg">✅ Malipo yamethibitishwa! Unaweza kutafsiri sasa.</div>
+  <div class="credit">Salio lako: <b id="salioText">Page 1 BURE</b> &nbsp;|&nbsp; Bei: <b>50 TSH / Page 1</b><br>
+  <button onclick="resetBure()" style="width:auto;padding:6px 14px;font-size:13px;background:#475569;color:white;margin-top:6px">🔄 JARIBU BURE TENA (Kwa Kujipima)</button></div>
+  <div class="unlock-msg" id="unlockMsg">✅ Malipo yamethibitishwa!</div>
 
   <div class="row">
     <div>
@@ -83,7 +84,7 @@
   <div class="two-box">
     <div>
       <b>Weka notice</b>
-      <textarea id="inputText" placeholder="Andika / Paste notice yako hapa..."></textarea>
+      <textarea id="inputText" placeholder="Andika / Paste notice yako hapa...">你好，我是学生</textarea>
     </div>
     <div>
       <b>Weka picha yenye maandishi</b>
@@ -94,8 +95,17 @@
     </div>
   </div>
 
+  <!-- SAUTI ILIYOREKEBISHWA - MWANAUME / MWANAMKE / MTOTO -->
   <label>🎙️ Chagua Sauti:</label>
-  <select id="voiceSelect"></select>
+  <select id="voiceType" onchange="testSauti()">
+    <option value="mwanamke" selected>👩 Mwanamke - Mwalimu Mwanamke (Inapendekezwa)</option>
+    <option value="mwanaume">👨 Mwanaume - Mwalimu Mwanaume</option>
+    <option value="mtoto">🧒 Mtoto - Sauti ya Kitoto</option>
+  </select>
+  <label>🎤 Chagua Sauti Halisi ya Simu (Hiari):</label>
+  <select id="voiceSelect"><option value="">Inapakia sauti za simu...</option></select>
+  <button class="btn-test" onclick="testSauti()">🔊 JARIBU SAUTI SASA - Bonyeza Usikie</button>
+
   <label>🐢 Kasi ya Kusoma:</label>
   <select id="speedSelect">
     <option value="0.6">Polepole sana - Kujifunza</option>
@@ -120,24 +130,23 @@
     <div class="explain" id="discussBox" style="background:#ffedd5;display:none"></div>
   </div>
 
-  <!-- SEHEMU YA MALIPO - 50 TSH -->
   <div class="pay-box" id="payBox">
     <h2>💳 LIPA ILI UENDELEE - 50 TSH / PAGE</h2>
     <p style="text-align:center;margin:5px 0;font-size:14px">Page 1 ya kwanza ni BURE. Ukimaliza, lipa 50 TSH kwa kila page inayofuata.</p>
     <div class="pay-num">
       📱 <b>M-PESA</b><br>
       Namba: <b>0746796744</b><br>
-      Jina: <b>GALLAX TRANSLATOR</b><br>
+      Jina: <b>SULEIMAN KARISHA</b><br>
       Kiasi: <b>50 TSH</b>
     </div>
     <div class="pay-num">
       📱 <b>YAS / MIX BY YAS</b><br>
       Namba: <b>0658041668</b><br>
-      Jina: <b>GALLAX TRANSLATOR</b><br>
+      Jina: <b>SULEIMAN KARISHA</b><br>
       Kiasi: <b>50 TSH</b>
     </div>
-    <label style="color:#111">1. Tuma 50 TSH kwa namba moja hapo juu</label>
-    <label style="color:#111">2. Weka namba ya Muamala hapa chini (mfano: PA123ABC...)</label>
+    <label style="color:#111">1. Tuma 50 TSH kwa namba moja hapo juu - Jina SULEIMAN KARISHA</label>
+    <label style="color:#111">2. Weka namba ya Muamala hapa chini</label>
     <input type="text" id="muamalaInput" placeholder="Weka namba ya Muamala hapa...">
     <label style="color:#111">3. Chagua Page ngapi umelipia?</label>
     <select id="pageCount">
@@ -147,9 +156,8 @@
       <option value="10">Page 10 - 500 TSH</option>
     </select>
     <button class="btn-lipa" onclick="thibitishaMalipo()">✅ NIMESHALIPA - FUNGUA APP</button>
-    <p style="text-align:center;font-size:12px;margin:8px 0 0 0">Baada ya kulipa, weka namba ya muamala na ubonyeze hapo juu. Utapata salio papo hapo.</p>
   </div>
-  <p style="text-align:center;font-size:12px;color:#94a3b8;margin-top:12px">© 2026 GALLAX TRANSLATOR • M-Pesa 0746796744 • Yas 0658041668</p>
+  <p style="text-align:center;font-size:12px;color:#94a3b8;margin-top:12px">© 2026 GALLAX TRANSLATOR • M-Pesa 0746796744 • Yas 0658041668 • SULEIMAN KARISHA</p>
 </div>
 
 <script>
@@ -159,26 +167,22 @@ let pagesZilizotumika = parseInt(localStorage.getItem('gallax_used') || '0');
 let pagesZilizoLipwa = parseInt(localStorage.getItem('gallax_paid') || '0');
 let bure = 1;
 
+function resetBure(){
+  localStorage.setItem('gallax_used','0');
+  localStorage.setItem('gallax_paid','0');
+  pagesZilizotumika=0; pagesZilizoLipwa=0;
+  updateSalio();
+  alert("Sawa! Umepata Page 1 BURE tena kwa kujipima.");
+}
 function updateSalio(){
   let salio = bure + pagesZilizoLipwa - pagesZilizotumika;
   if(salio < 0) salio = 0;
   document.getElementById('salioText').innerText = "Page " + salio + " zimebaki";
-  let main = document.getElementById('mainArea');
-  let pay = document.getElementById('payBox');
-  if(salio <= 0){
-    main.classList.add('locked');
-    pay.style.display = 'block';
-    document.getElementById('output').innerText = "🔒 Salio limeisha. Lipa 50 TSH ili uendelee kutafsiri.";
-  } else {
-    main.classList.remove('locked');
-    if(pagesZilizotumika > 0) pay.style.display = 'block';
-    else pay.style.display = 'block';
-  }
 }
 function thibitishaMalipo(){
   let muamala = document.getElementById('muamalaInput').value.trim();
-  if(muamala.length < 5){ alert("Weka namba sahihi ya Muamala. Lazima iwe angalau herufi 5."); return; }
-  if(localStorage.getItem('gallax_muamala_' + muamala)){ alert("Namba hii ya muamala imeshatumika! Weka namba mpya."); return; }
+  if(muamala.length < 5){ alert("Weka namba sahihi ya Muamala."); return; }
+  if(localStorage.getItem('gallax_muamala_' + muamala)){ alert("Namba hii imeshatumika! Weka mpya."); return; }
   let count = parseInt(document.getElementById('pageCount').value);
   pagesZilizoLipwa += count;
   localStorage.setItem('gallax_paid', pagesZilizoLipwa);
@@ -186,15 +190,35 @@ function thibitishaMalipo(){
   document.getElementById('muamalaInput').value = "";
   let msg = document.getElementById('unlockMsg');
   msg.style.display = 'block';
-  msg.innerText = "✅ Asante! Umeongeza Page " + count + ". Unaweza kutafsiri sasa.";
+  msg.innerText = "✅ Asante SULEIMAN KARISHA amepokea! Umeongeza Page " + count;
   setTimeout(()=>{ msg.style.display='none'; }, 4000);
   updateSalio();
 }
+
+// TAFSIRI - IMEREKEBISHWA NA BACKUP API
+function mapLang(code){
+  if(code==='zh-CN') return 'zh-CN';
+  return code;
+}
 async function tafsiriMyMemory(text, from, to){
-  let url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`;
-  let res = await fetch(url);
-  let data = await res.json();
-  return data.responseData.translatedText;
+  try{
+    let f = mapLang(from), t = mapLang(to);
+    let url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${f}|${t}`;
+    let res = await fetch(url);
+    let data = await res.json();
+    if(data && data.responseData && data.responseData.translatedText && data.responseData.translatedText.toLowerCase() !== text.toLowerCase()){
+      return data.responseData.translatedText;
+    }
+    throw new Error("MyMemory fail");
+  }catch(e){
+    // BACKUP: Google Translate gtx
+    let f2 = from==='zh-CN' ? 'zh-CN' : from;
+    let t2 = to==='zh-CN' ? 'zh-CN' : to;
+    let url2 = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${f2}&tl=${t2}&dt=t&q=${encodeURIComponent(text)}`;
+    let r2 = await fetch(url2);
+    let d2 = await r2.json();
+    return d2[0].map(x=>x[0]).join('');
+  }
 }
 async function somaPicha(e){
   let file = e.target.files[0];
@@ -210,12 +234,12 @@ async function somaPicha(e){
     document.getElementById('inputText').value = result.data.text;
     document.getElementById('ocrStatus').innerText = "✅ Imesoma! Sasa bonyeza TAFSIRI";
   }catch(err){
-    document.getElementById('ocrStatus').innerText = "Imeshindwa kusoma picha. Jaribu picha iliyo clear.";
+    document.getElementById('ocrStatus').innerText = "Imeshindwa. Jaribu picha clear.";
   }
 }
 async function tafsiri(){
   let salio = bure + pagesZilizoLipwa - pagesZilizotumika;
-  if(salio <= 0){ alert("Salio limeisha! Lipa 50 TSH kwa M-Pesa 0746796744 au Yas 0658041668 ili uendelee."); document.getElementById('payBox').scrollIntoView({behavior:'smooth'}); return; }
+  if(salio <= 0){ alert("Salio limeisha! Lipa 50 TSH kwa M-Pesa 0746796744 au Yas 0658041668 - Jina SULEIMAN KARISHA"); document.getElementById('payBox').scrollIntoView({behavior:'smooth'}); return; }
   let text = document.getElementById('inputText').value.trim();
   if(!text){ alert("Weka kwanza notice au picha!"); return; }
   let from = document.getElementById('fromLang').value;
@@ -235,7 +259,123 @@ async function tafsiri(){
     if(kina){
       let html = `<h3>📚 MAELEZO YA KINA - Mwalimu Anakufundisha:</h3>`;
       html += `<b>Umeandika:</b><br>${text}<br><br><b>Maana yake:</b><br>${t}<br><br>`;
-      html += `<b>Uchambuzi:</b><br>Sentensi hii ina maana kwamba ${t}. Jaribu kuisoma mara 3, halafu andika sentensi yako mwenyewe ukitumia maneno haya.<br><br>`;
-      html += `<b>Maswali ya Kujipima:</b><br>❓ Hii ina ma
-  
-  
+      html += `<b>Uchambuzi:</b><br>Sentensi hii ina maana kwamba ${t}. Jaribu kuisoma mara 3, halafu andika sentensi yako mwenyewe.<br><br>`;
+      html += `<b>Maswali:</b><br>❓ Hii ina maana gani?<br>❓ Ungeitumia wapi maishani?`;
+      let box = document.getElementById('explainBox');
+      box.style.display = 'block';
+      box.innerHTML = html;
+    }
+    somaSauti(t, to);
+  }catch(e){
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('output').innerText = "Imeshindwa. Hakikisha una internet na ujaribu tena.";
+    alert("Imeshindwa kutafsiri. Angalia internet yako na ujaribu tena.");
+  }
+}
+
+// SAUTI - IMEREKEBISHWA KABISA: MWANAUME / MWANAMKE / MTOTO
+function getVoiceAndPitch(type, lang){
+  let voices = speechSynthesis.getVoices();
+  let v = null;
+  let pitch = 1, rate = parseFloat(document.getElementById('speedSelect').value) || 0.8;
+  let sel = document.getElementById('voiceSelect').value;
+  if(sel){
+    let found = voices.find(x=>x.name===sel);
+    if(found) v = found;
+  }
+  if(!v){
+    // Jaribu kutafuta sauti ya lugha husika
+    v = voices.find(x=>x.lang===lang) || voices.find(x=>x.lang && x.lang.startsWith(lang.split('-')[0])) || voices[0];
+  }
+  if(type==='mwanaume'){ pitch = 0.7; }
+  else if(type==='mwanamke'){ pitch = 1.15; }
+  else if(type==='mtoto'){ pitch = 1.6; rate = rate * 0.9; }
+  return {voice:v, pitch:pitch, rate:rate};
+}
+function somaSauti(text, lang){
+  if(!text) return;
+  if(!('speechSynthesis' in window)){ alert("Simu yako haiungi mkono sauti. Tumia Chrome."); return; }
+  speechSynthesis.cancel(); inasomaMwalimu=false;
+  let type = document.getElementById('voiceType').value;
+  let cfg = getVoiceAndPitch(type, lang);
+  let u = new SpeechSynthesisUtterance(text);
+  u.lang = lang;
+  u.rate = cfg.rate;
+  u.pitch = cfg.pitch;
+  u.volume = 1;
+  if(cfg.voice) u.voice = cfg.voice;
+  u.onerror = function(e){ console.log("TTS error", e); };
+  speechSynthesis.speak(u);
+}
+function testSauti(){
+  let to = document.getElementById('toLang').value;
+  let type = document.getElementById('voiceType').value;
+  let sample = to==='sw' ? "Habari, mimi ni mwalimu wako. Sauti hii umeichagua ni hii hapa." : "Hello, this is your teacher voice. Can you hear me clearly?";
+  if(to==='zh-CN') sample = "你好，我是你的老师，你能听清楚吗？";
+  somaSauti(sample, to);
+}
+function somaTu(){
+  let t = document.getElementById('inputText').value.trim();
+  if(!t) return alert("Weka maandishi kwanza");
+  somaSauti(t, document.getElementById('fromLang').value);
+}
+function somaMatokeo(){
+  if(!tafsiriYaMwisho) return alert("Tafsiri kwanza - Bonyeza TAFSIRI NA NISOMEE");
+  somaSauti(tafsiriYaMwisho, document.getElementById('toLang').value);
+}
+function somaKamaMwalimu(){
+  if(!tafsiriYaMwisho) return alert("Tafsiri kwanza!");
+  if(inasomaMwalimu){ speechSynthesis.cancel(); inasomaMwalimu=false; return; }
+  let original = document.getElementById('inputText').value.trim();
+  let t = tafsiriYaMwisho;
+  let to = document.getElementById('toLang').value;
+  let list = [
+    "Habari mwanafunzi wangu, karibu kwenye darasa. Leo tutajifunza pamoja.",
+    "Sikiliza vizuri. Maandishi ya asili ni haya. " + original,
+    "Sasa sikiliza tafsiri yake kwa Kiswahili. " + t,
+    "Umeelewa? Sasa jaribu kurudia sentensi hii mara tatu kwa sauti yako mwenyewe.",
+    "Vizuri sana. Umeielewa. Endelea kujifunza, uko vizuri sana."
+  ];
+  inasomaMwalimu = true;
+  somaZamu(list, 0, to);
+}
+function somaZamu(list, i, lang){
+  if(i>=list.length || !inasomaMwalimu){ inasomaMwalimu=false; return; }
+  let type = document.getElementById('voiceType').value;
+  let cfg = getVoiceAndPitch(type, lang);
+  let u = new SpeechSynthesisUtterance(list[i]);
+  u.lang = lang; u.rate = 0.75; u.pitch = cfg.pitch;
+  if(cfg.voice) u.voice = cfg.voice;
+  u.onend = ()=> setTimeout(()=> somaZamu(list, i+1, lang), 1200);
+  speechSynthesis.speak(u);
+}
+function anzaDiscussion(){
+  if(!tafsiriYaMwisho) return alert("Tafsiri kwanza!");
+  let box = document.getElementById('discussBox');
+  box.style.display = 'block';
+  box.innerHTML = `<h3>💬 DISCUSSION</h3><b>Mwalimu:</b> Umeelewa hii tafsiri? "${tafsiriYaMwisho}"<br><br><b>Jaribu kujibu:</b><br>1. Hii sentensi ina maana gani kwa maneno yako mwenyewe?<br>2. Ungeitumia wapi? Shuleni? Kazini? Dukani?<br>3. Andika sentensi nyingine kama hii.<br><br><button onclick="somaSauti('Umeelewa hii tafsiri? Jaribu kuniambia kwa maneno yako mwenyewe ina maana gani.', document.getElementById('toLang').value)" style="width:auto;padding:10px 18px;background:#f97316;color:white;border:none;border-radius:10px;font-weight:bold">🔊 SIKILIZA SWALI LA MWALIMU</button>`;
+  somaSauti("Umeelewa hii tafsiri? Jaribu kuniambia kwa maneno yako mwenyewe ina maana gani.", document.getElementById('toLang').value);
+}
+function jazaSauti(){
+  let voices = speechSynthesis.getVoices();
+  let sel = document.getElementById('voiceSelect');
+  if(!sel || voices.length===0) return;
+  let old = sel.value;
+  sel.innerHTML = "<option value=''>Otomatiki - Chagua bora zaidi</option>";
+  voices.forEach(v=>{
+    let o = document.createElement("option");
+    o.value = v.name; o.text = v.name + " (" + v.lang + ")";
+    sel.appendChild(o);
+  });
+  if(old) sel.value = old;
+}
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = jazaSauti;
+  setTimeout(jazaSauti, 500);
+  setTimeout(jazaSauti, 1500);
+}
+updateSalio();
+</script>
+</body>
+         </html>
+      
